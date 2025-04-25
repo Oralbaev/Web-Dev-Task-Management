@@ -1,0 +1,131 @@
+<div class="header">
+  <div>Task management</div>
+  <div class = 'userid'>
+    <button *ngIf="!auth.isAuthenticated()" (click)="router.navigate(['/login'])">
+      Login
+    </button>
+    <div *ngIf="auth.isAuthenticated()" class="welcome">
+      {{ auth.currentUser$ | async }}
+    </div>
+    <button *ngIf="auth.isAuthenticated()" (click)="logout()">
+      Log out
+    </button>
+  </div>
+</div>
+
+<div class="main-page">
+  <aside class="task-list-board">
+    <h2>My Task Lists</h2>
+
+    <form class="new-list-form" (ngSubmit)="createList()" #lf="ngForm">
+      <input name="newList" [(ngModel)]="newListName" placeholder="New list name" required />
+      <button type="submit" [disabled]="lf.invalid">Create</button>
+    </form>
+
+    <ul class="list-group">
+      <li *ngFor="let list of lists" class="list-group-item" [class.active]="list.id===listId">
+        <span (click)="selectList(list)" class="list-name">{{ list.name }}</span>
+        <button (click)="startEdit(list)">✏️</button>
+        <button class="delete-btn" (click)="deleteList(list)">🗑️</button>
+      </li>
+    </ul>
+
+    <div *ngIf="editingList" class="edit-list-form">
+      <input [(ngModel)]="editingListName" placeholder="New name" />
+      <button (click)="saveEdit()">Save</button>
+      <button (click)="cancelEdit()">Cancel</button>
+    </div>
+
+    <hr />
+
+    <h2>Tags</h2>
+
+    <form class="new-tag-form" (ngSubmit)="createTag()" #tf="ngForm">
+      <input
+        name="newTag"
+        [(ngModel)]="newTagName"
+        placeholder="New tag"
+        required
+      />
+      <button type="submit" [disabled]="tf.invalid">Add Tag</button>
+    </form>
+
+    <ul class="tag-list">
+      <li *ngFor="let tag of tags" class="tag-item">
+        {{ tag.name }}
+        <button class="delete-btn" (click)="deleteTag(tag)">🗑️</button>
+      </li>
+    </ul>
+  </aside>
+
+  <section class="task-area">
+    <div class="tag-filter">
+      <label for="filterTag">Filter by tag:</label>
+      <select id="filterTag"
+              [(ngModel)]="filterTagId"
+              (change)="applyFilter()">
+        <option [ngValue]="null">Все</option>
+        <option *ngFor="let tag of tags" [ngValue]="tag.id">
+          {{ tag.name }}
+        </option>
+      </select>
+    </div>
+
+    <div class="kanban-board">
+      <div class="new-task-form">
+        <input [(ngModel)]="newTaskTitle" placeholder="Task name" />
+        <input [(ngModel)]="newTaskDescription" placeholder="Description" />
+        <input type="date" [(ngModel)]="newTaskDate" />
+        <select multiple [(ngModel)]="selectedTagIds">
+          <option *ngFor="let tag of tags" [value]="tag.id">{{ tag.name }}</option>
+        </select>
+        <button (click)="addTask()">Add</button>
+      </div>
+
+      <div class="columns">
+        <!-- Not done -->
+        <div class="column">
+          <h3>Not done</h3>
+          <div *ngFor="let task of todo" class="task-card">
+            <strong>{{ task.title }}</strong>
+            <p>{{ task.description }}</p>
+            <label>
+              <input type="checkbox" (change)="markInProgress(task)" />
+              In Progress
+            </label>
+            <button (click)="deleteTask(task)">🗑️</button>
+          </div>
+        </div>
+    
+        <!-- In progress -->
+        <div class="column">
+          <h3>In progress</h3>
+          <div *ngFor="let task of inProgress" class="task-card">
+            <strong>{{ task.title }}</strong>
+            <p>{{ task.description }}</p>
+            <label>
+              <input type="checkbox" (change)="markDone(task)" />
+              Done
+            </label>
+            <button (click)="deleteTask(task)">🗑️</button>
+          </div>
+        </div>
+    
+        <!-- Done -->
+        <div class="column">
+          <h3>Done</h3>
+          <div *ngFor="let task of done" class="task-card">
+            <strong>{{ task.title }}</strong>
+            <p>{{ task.description }}</p>
+            <!-- Можно оставить чекбокс, чтобы вернуть в In Progress, если нужно -->
+            <label>
+              <input type="checkbox" [checked]="true" (change)="markInProgress(task)" />
+              In Progress
+            </label>
+            <button (click)="deleteTask(task)">🗑️</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>

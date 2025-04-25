@@ -1,0 +1,39 @@
+<div class="container">
+  <form (ngSubmit)="register()" #f="ngForm" class="login-box">
+    <h2>SIGN UP</h2>
+
+    <div *ngIf="successMessage" class="alert alert-success">
+      {{ successMessage }}
+    </div>
+    <div *ngIf="errorMessage" class="alert alert-error">
+      {{ errorMessage }}
+    </div>
+
+    <input
+      name="username"
+      [(ngModel)]="username"
+      placeholder="Username"
+      required
+    />
+
+    <input
+      class = "pass"
+      name="password"
+      type="password"
+      [(ngModel)]="password"
+      placeholder="Password"
+      required
+    />
+
+    <button class = "butt" type="submit" [disabled]="f.invalid">
+      REGISTER
+    </button>
+
+    <p class="signup-prompt">
+      Уже есть аккаунт?
+      <button type="button" class="signup-btn" (click)="goToLogin()">
+        Login
+      </button>
+    </p>
+  </form>
+</div>

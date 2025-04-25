@@ -1,0 +1,46 @@
+<!-- Header -->
+<div class="header">
+    <div>Task managment</div>
+    <div>
+      <button>Login</button>
+      <button>Log out</button>
+    </div>
+  </div>
+  
+  <!-- Ввод новой задачи -->
+  <div class="new-task-form">
+    <input [(ngModel)]="newTaskTitle" placeholder="Task name" />
+    <input [(ngModel)]="newTaskDescription" placeholder="Description of the task" />
+    <button (click)="addTask()">Add</button>
+  </div>
+  
+  <!-- Kanban доска -->
+  <div class="kanban-board">
+    <div class="column">
+      <h3>Not done</h3>
+      <div *ngFor="let task of todo" class="task-card">
+        <strong>{{ task.title }}</strong>
+        <p>{{ task.description }}</p>
+        <button (click)="deleteTask(task)">🗑️</button>
+      </div>
+    </div>
+  
+    <div class="column">
+      <h3>In progress</h3>
+      <div *ngFor="let task of inProgress" class="task-card">
+        <strong>{{ task.title }}</strong>
+        <p>{{ task.description }}</p>
+        <button (click)="deleteTask(task)">🗑️</button>
+      </div>
+    </div>
+  
+    <div class="column">
+      <h3>Done</h3>
+      <div *ngFor="let task of done" class="task-card">
+        <strong>{{ task.title }}</strong>
+        <p>{{ task.description }}</p>
+        <button (click)="deleteTask(task)">🗑️</button>
+      </div>
+    </div>
+  </div>
+  
